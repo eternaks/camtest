@@ -1,56 +1,60 @@
 import os
 import cv2
 import numpy as np
+import json
+import charuco
 
 ARUCO_DICT = cv2.aruco.DICT_4X4_50
 SQUARES_VERTICALLY = 7
 SQUARES_HORIZONTALLY = 5
-SQUARE_LENGTH = 0.03
-MARKER_LENGTH = 0.015
+SQUARE_LENGTH = 124.72
+MARKER_LENGTH = 64.251
+LENGTH_PX = 1007   # total length of the page in pixels
+MARGIN_PX = 30    # size of the margin in pixels
 # ...
-PATH_TO_YOUR_IMAGES = '/home/calvin/projects/camtest/finalimgs'
+PATH_TO_YOUR_IMAGES = '/home/calvin/projects/camtest/calibration_images'
 # ------------------------------
 
-def calibrate_and_save_parameters():
-    # Define the aruco dictionary and charuco board
+def get_calibration_parameters(img_dir):
+    # Define the aruco dictionary, charuco board and detector
     dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICT)
     board = cv2.aruco.CharucoBoard((SQUARES_VERTICALLY, SQUARES_HORIZONTALLY), SQUARE_LENGTH, MARKER_LENGTH, dictionary)
     params = cv2.aruco.DetectorParameters()
-
-    # Load PNG images from folder
-    image_files = [os.path.join(PATH_TO_YOUR_IMAGES, f) for f in os.listdir(PATH_TO_YOUR_IMAGES) if f.endswith(".png")]
-    image_files.sort()  # Ensure files are in order
-
-    all_charuco_corners = []
+    detector = cv2.aruco.ArucoDetector(dictionary, params)
+    
+    # Load images from directory
+    image_files = [os.path.join(img_dir, f) for f in os.listdir(img_dir) if f.endswith(".png")]
     all_charuco_ids = []
+    all_charuco_corners = []
 
+    # Loop over images and extraction of corners
     for image_file in image_files:
         image = cv2.imread(image_file)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        imgSize = image.shape
         image_copy = image.copy()
-        marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(image, dictionary, parameters=params)
+        marker_corners, marker_ids, rejectedCandidates = detector.detectMarkers(image)
         
-        # If at least one marker is detected
-        if len(marker_ids) > 0:
-            cv2.aruco.drawDetectedMarkers(image_copy, marker_corners, marker_ids)
-            charuco_retval, charuco_corners, charuco_ids = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, image, board)
-            if charuco_retval:
-                all_charuco_corners.append(charuco_corners)
-                all_charuco_ids.append(charuco_ids)
+        if len(marker_ids) > 0: # If at least one marker is detected
+            # cv2.aruco.drawDetectedMarkers(image_copy, marker_corners, marker_ids)
+            ret, charucoCorners, charucoIds = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, image, board)
 
-    # Calibrate camera
-    retval, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.aruco.calibrateCameraCharuco(all_charuco_corners, all_charuco_ids, board, image.shape[:2], None, None)
+            if charucoIds is not None and len(charucoCorners) > 3:
+                all_charuco_corners.append(charucoCorners)
+                all_charuco_ids.append(charucoIds)
 
-    # Save calibration data
-    np.save('camera_matrix.npy', camera_matrix)
-    np.save('dist_coeffs.npy', dist_coeffs)
+    # Calibrate camera with extracted information
+    result, mtx, dist, rvecs, tvecs = cv2.aruco.calibrateCameraCharuco(all_charuco_corners, all_charuco_ids, board, (640, 480), None, None)
+    return mtx, dist
 
-    # Iterate through displaying all the images
-    for image_file in image_files:
-        image = cv2.imread(image_file)
-        undistorted_image = cv2.undistort(image, camera_matrix, dist_coeffs)
-        cv2.imshow('Undistorted Image', undistorted_image)
-        cv2.waitKey(0)
+SENSOR = 'monochrome'
+LENS = 'usbcam'
+OUTPUT_JSON = 'calibration.json'
 
-    cv2.destroyAllWindows()
+mtx, dist = get_calibration_parameters(img_dir='./calibration_images/')
+data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
 
-calibrate_and_save_parameters()
+with open(OUTPUT_JSON, 'w') as json_file:
+    json.dump(data, json_file, indent=4)
+
+print(f'Data has been saved to {OUTPUT_JSON}')

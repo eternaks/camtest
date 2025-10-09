@@ -7,11 +7,11 @@ import cv2
 ARUCO_DICT = cv2.aruco.DICT_4X4_50
 SQUARES_VERTICALLY = 7
 SQUARES_HORIZONTALLY = 5
-SQUARE_LENGTH = 0.03
-MARKER_LENGTH = 0.015
-LENGTH_PX = 640   # total length of the page in pixels
-MARGIN_PX = 20    # size of the margin in pixels
-SAVE_NAME = 'ChArUco_Marker.png'
+SQUARE_LENGTH = 124.72
+MARKER_LENGTH = 64.251
+LENGTH_PX = 1007   # total length of the page in pixels
+MARGIN_PX = 30    # size of the margin in pixels
+SAVE_NAME = 'ChArUco_Marker1.png'
 # ------------------------------
 
 def create_and_save_new_board():
@@ -23,4 +23,4 @@ def create_and_save_new_board():
     cv2.waitKey(2000)
     cv2.imwrite(SAVE_NAME, img)
 
-create_and_save_new_board()
+# create_and_save_new_board()
