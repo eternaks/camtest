@@ -1,19 +1,20 @@
 import json
 import cv2
 import numpy as np
+import constants
 
 json_file_path = './calibration.json'
 
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
-ARUCO_DICT = cv2.aruco.DICT_4X4_50
-SQUARES_VERTICALLY = 7
-SQUARES_HORIZONTALLY = 5
-SQUARE_LENGTH = 124.72
-MARKER_LENGTH = 64.251
-LENGTH_PX = 1007   # total length of the page in pixels
-MARGIN_PX = 30    # size of the margin in pixels
-SAVE_NAME = 'ChArUco_Marker1.png'
+# ARUCO_DICT = cv2.aruco.DICT_4X4_50
+# SQUARES_VERTICALLY = 7
+# SQUARES_HORIZONTALLY = 5
+# SQUARE_LENGTH = 124.72
+# MARKER_LENGTH = 64.251
+# LENGTH_PX = 1007   # total length of the page in pixels
+# MARGIN_PX = 30    # size of the margin in pixels
+# SAVE_NAME = 'ChArUco_Marker1.png'
 # ------------------------------
 
 with open(json_file_path, 'r') as file: # Read the JSON file
@@ -22,8 +23,8 @@ with open(json_file_path, 'r') as file: # Read the JSON file
 mtx = np.array(json_data['mtx'])
 dst = np.array(json_data['dist'])
 
-dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICT)
-board = cv2.aruco.CharucoBoard((SQUARES_VERTICALLY, SQUARES_HORIZONTALLY), SQUARE_LENGTH, MARKER_LENGTH, dictionary)
+dictionary = cv2.aruco.getPredefinedDictionary(constants.ARUCO_DICT)
+board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_HORIZONTALLY), constants.SQUARE_LENGTH, constants.MARKER_LENGTH, dictionary)
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
@@ -43,12 +44,12 @@ while True:
     if ids is not None:
         # Estimate pose of each marker
         rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(
-            corners, MARKER_LENGTH, mtx, dst
+            corners, constants.MARKER_LENGTH, mtx, dst
         )
 
         for i in range(len(ids)):
             cv2.aruco.drawDetectedMarkers(frame, corners, ids)
-            cv2.drawFrameAxes(frame, mtx, dst, rvecs[i], tvecs[i], MARKER_LENGTH * 0.5)
+            cv2.drawFrameAxes(frame, mtx, dst, rvecs[i], tvecs[i], constants.MARKER_LENGTH * 0.5)
 
             # Print pose data
             print(f"Marker ID {ids[i][0]}:")

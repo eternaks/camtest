@@ -3,22 +3,23 @@ import cv2
 import numpy as np
 import json
 import charuco
+import constants
 
-ARUCO_DICT = cv2.aruco.DICT_4X4_50
-SQUARES_VERTICALLY = 7
-SQUARES_HORIZONTALLY = 5
-SQUARE_LENGTH = 124.72
-MARKER_LENGTH = 64.251
-LENGTH_PX = 1007   # total length of the page in pixels
-MARGIN_PX = 30    # size of the margin in pixels
+# ARUCO_DICT = cv2.aruco.DICT_4X4_50
+# SQUARES_VERTICALLY = 7
+# SQUARES_HORIZONTALLY = 5
+# SQUARE_LENGTH = 124.72
+# MARKER_LENGTH = 64.251
+# LENGTH_PX = 1007   # total length of the page in pixels
+# MARGIN_PX = 30    # size of the margin in pixels
 # ...
 PATH_TO_YOUR_IMAGES = '/home/calvin/projects/camtest/calibration_images'
 # ------------------------------
 
 def get_calibration_parameters(img_dir):
     # Define the aruco dictionary, charuco board and detector
-    dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICT)
-    board = cv2.aruco.CharucoBoard((SQUARES_VERTICALLY, SQUARES_HORIZONTALLY), SQUARE_LENGTH, MARKER_LENGTH, dictionary)
+    dictionary = cv2.aruco.getPredefinedDictionary(constants.ARUCO_DICT)
+    board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_HORIZONTALLY), constants.SQUARE_LENGTH, constants.MARKER_LENGTH, dictionary)
     params = cv2.aruco.DetectorParameters()
     detector = cv2.aruco.ArucoDetector(dictionary, params)
     

@@ -3,12 +3,11 @@ from cv2 import aruco
 import numpy as np
 import datetime
 import os
+import constants
 
-# Define the number of pictures to take
 counter = 0
-# Define the directory to save the pictures (create it if it doesn't exist)
 image_folder_name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-save_directory = "./calibration_images" + "/" + image_folder_name
+save_directory = "./calibration_images/" + image_folder_name
 
 try:
     os.mkdir(save_directory)
@@ -18,14 +17,14 @@ except FileExistsError:
 except Exception as e:
     print(f"An error occurred: {e}")
 
-# Initialize the camera (0 for default webcam)
-# If you have multiple cameras, you might need to try other indices (e.g., 1, 2)
+# initialize the camera (0 for default webcam)
+# if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
 cap = cv2.VideoCapture(0)
-marker_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+marker_dict = aruco.getPredefinedDictionary(constants.ARUCO_DICT)
 param_markers = aruco.DetectorParameters()
 
 
-# Check if the camera opened successfully
+# check if the camera opened successfully
 if not cap.isOpened():
     print("Error: Could not open video stream.")
     exit()
@@ -40,6 +39,7 @@ while cap.isOpened():
         gray_frame, marker_dict, parameters=param_markers
     )
 
+    # if tags are visible, display their id and draw a box around them
     if marker_corners:
         for ids, corners in zip(marker_IDs, marker_corners):
             cv2.polylines(
@@ -66,11 +66,13 @@ while cap.isOpened():
 
     if k == 27:
         break
+    # save raw image to directory when the "s" key is pressed
     elif k == ord('s'):
         cv2.imwrite(save_directory + "/img" + str(counter) + '.png', img)
         print("image saved!")
         counter += 1
 
+    # display live image in a seperate window
     cv2.imshow('Img', visual_img)
 
 cap.release()
