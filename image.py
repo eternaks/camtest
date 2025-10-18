@@ -19,7 +19,7 @@ except Exception as e:
 
 # initialize the camera (0 for default webcam)
 # if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(4)
 marker_dict = aruco.getPredefinedDictionary(constants.ARUCO_DICT)
 param_markers = aruco.DetectorParameters()
 

@@ -13,7 +13,7 @@ import constants
 # LENGTH_PX = 1007   # total length of the page in pixels
 # MARGIN_PX = 30    # size of the margin in pixels
 # ...
-PATH_TO_YOUR_IMAGES = '/home/calvin/projects/camtest/calibration_images'
+PATH_TO_YOUR_IMAGES = 'calibration_images/2025-10-16 19:42:33'
 # ------------------------------
 
 def get_calibration_parameters(img_dir):
@@ -50,9 +50,9 @@ def get_calibration_parameters(img_dir):
 
 SENSOR = 'monochrome'
 LENS = 'usbcam'
-OUTPUT_JSON = 'calibration.json'
+OUTPUT_JSON = 'newcalibration.json'
 
-mtx, dist = get_calibration_parameters(img_dir='./calibration_images/')
+mtx, dist = get_calibration_parameters(img_dir='calibration_images/2025-10-16 19:42:33')
 data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
 
 with open(OUTPUT_JSON, 'w') as json_file:

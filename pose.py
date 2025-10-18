@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import constants
 
-json_file_path = './calibration.json'
+json_file_path = './newcalibration.json'
 
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
@@ -55,6 +55,8 @@ while True:
             print(f"Marker ID {ids[i][0]}:")
             print(f"  Rotation Vector (rvec): {rvecs[i].ravel()}")
             print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
+            print("Top left corner", corners[0])
+            # print("Bottom right corner", corners[2])
             print("-" * 30)
 
     else:

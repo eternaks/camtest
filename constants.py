@@ -12,4 +12,7 @@ MARKER_LENGTH = 64.251
 LENGTH_PX = 1007   # total length of the page in pixels
 MARGIN_PX = 30    # size of the margin in pixels
 SAVE_NAME = 'ChArUco_Marker1.png'
+DEFAULT_CAM_GAIN = 0
+DEFAULT_CAM_EXPOSURE = 156
+DEFAULT_CAM_BRIGHTNESS = 0
 # ------------------------------
