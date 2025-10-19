@@ -5,6 +5,19 @@ import datetime
 import os
 import constants
 
+def setExposure(cap, exposure):
+    cap.set(cv2.CAP_PROP_EXPOSURE, exposure)
+    print("new exposure", exposure)
+
+def setBrightness(cap, brightness):
+    cap.set(cv2.CAP_PROP_BRIGHTNESS, brightness)
+    print("new brightness", brightness)
+
+def toggleAutoExposure(cap, autoexposure):
+    cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, autoexposure)
+    print("autoexposure value", autoexposure)
+    return autoexposure
+
 counter = 0
 image_folder_name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 save_directory = "./calibration_images/" + image_folder_name
@@ -20,9 +33,15 @@ except Exception as e:
 # initialize the camera (0 for default webcam)
 # if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
 cap = cv2.VideoCapture(4)
+
+current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
+current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
+current_gain = int(cap.get(cv2.CAP_PROP_GAIN))
+autoexposure = cap.get(cv2.CAP_PROP_AUTO_EXPOSURE)
+cap.set(cv2.CAP_PROP_EXPOSURE, constants.DEFAULT_CAM_EXPOSURE)
+
 marker_dict = aruco.getPredefinedDictionary(constants.ARUCO_DICT)
 param_markers = aruco.DetectorParameters()
-
 
 # check if the camera opened successfully
 if not cap.isOpened():
@@ -71,6 +90,34 @@ while cap.isOpened():
         cv2.imwrite(save_directory + "/img" + str(counter) + '.png', img)
         print("image saved!")
         counter += 1
+
+    # toggle auto exposure
+    if cv2.waitKey(1) & 0xFF == ord('m'):
+        if(autoexposure == 1):
+            autoexposure = 3
+        else:
+            autoexposure = 1
+        toggleAutoExposure(cap, autoexposure)
+
+    # increase exposure
+    if cv2.waitKey(1) & 0xFF == ord('z'):
+        current_exposure += 10
+        setExposure(cap, current_exposure)
+    
+    # decrease exposure
+    if cv2.waitKey(1) & 0xFF == ord('x'):
+        current_exposure -= 10
+        setExposure(cap, current_exposure)
+        
+    # increase brightness
+    if cv2.waitKey(1) & 0xFF == ord('v'):
+        current_brightness += 10
+        setBrightness(cap, current_brightness)
+    
+    # decrease brightness
+    if cv2.waitKey(1) & 0xFF == ord('b'):
+        current_brightness -= 10
+        setBrightness(cap, current_brightness)
 
     # display live image in a seperate window
     cv2.imshow('Img', visual_img)

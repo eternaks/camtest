@@ -50,7 +50,7 @@ def get_calibration_parameters(img_dir):
 
 SENSOR = 'monochrome'
 LENS = 'usbcam'
-OUTPUT_JSON = 'newcalibration.json'
+OUTPUT_JSON = 'newnewcalibration.json'
 
 mtx, dist = get_calibration_parameters(img_dir='calibration_images/2025-10-16 19:42:33')
 data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
