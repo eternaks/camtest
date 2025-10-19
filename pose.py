@@ -63,6 +63,15 @@ while True:
         cv2.putText(frame, "No markers detected", (20, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
+    # Get image dimensions
+    height, width = frame.shape[:2]
+    center_x, center_y = width // 2, height // 2
+
+    # Draw horizontal line
+    cv2.line(frame, (center_x - 20, center_y), (center_x + 20, center_y), (0, 255, 0), 1)
+    # Draw vertical line
+    cv2.line(frame, (center_x, center_y - 20), (center_x, center_y + 20), (0, 255, 0), 1)
+
     cv2.imshow("Pose Estimation", frame)
     if cv2.waitKey(1) & 0xFF == 27:  # ESC to quit
         break

@@ -1,4 +1,4 @@
 /env
 /__pycache__
 /calibration_images/**/
-/calibration_images/*.png
+/calibration_images/*.png.

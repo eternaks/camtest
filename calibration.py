@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 import json
-import charuco
 import constants
 
 # ARUCO_DICT = cv2.aruco.DICT_4X4_50
@@ -50,9 +49,9 @@ def get_calibration_parameters(img_dir):
 
 SENSOR = 'monochrome'
 LENS = 'usbcam'
-OUTPUT_JSON = 'newnewcalibration.json'
+OUTPUT_JSON = 'calibration_56.json'
 
-mtx, dist = get_calibration_parameters(img_dir='calibration_images/2025-10-16 19:42:33')
+mtx, dist = get_calibration_parameters(img_dir='calibration_images/2025-10-19 14:15:15')
 data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
 
 with open(OUTPUT_JSON, 'w') as json_file:

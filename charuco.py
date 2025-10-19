@@ -23,4 +23,4 @@ def create_and_save_new_board():
     cv2.waitKey(2000)
     cv2.imwrite(constants.SAVE_NAME, img)
 
-# create_and_save_new_board()
+create_and_save_new_board()

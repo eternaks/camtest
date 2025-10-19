@@ -8,9 +8,9 @@ ARUCO_DICT = cv2.aruco.DICT_4X4_50
 SQUARES_VERTICALLY = 7
 SQUARES_HORIZONTALLY = 5
 SQUARE_LENGTH = 0.032998833333
-MARKER_LENGTH = 0.01699974375
-LENGTH_M = 0.26643541667   # total length of the page in pixels
-MARGIN_M = 0.079375    # size of the margin in pixels
+MARKER_LENGTH = 0.02
+LENGTH_M = 1056   # total length of the page in pixels
+MARGIN_M = 37    # size of the margin in pixels
 SAVE_NAME = 'ChArUco_Marker1.png'
 
 DEFAULT_CAM_GAIN = 0
