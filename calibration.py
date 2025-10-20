@@ -49,9 +49,10 @@ def get_calibration_parameters(img_dir):
 
 SENSOR = 'monochrome'
 LENS = 'usbcam'
-OUTPUT_JSON = 'calibration_56.json'
+FOLDER_NAME = './calibration_images/' + input('Enter calibration image folder name: ')
+OUTPUT_JSON = 'Calibration of' + FOLDER_NAME
 
-mtx, dist = get_calibration_parameters(img_dir='calibration_images/2025-10-19 14:15:15')
+mtx, dist = get_calibration_parameters(img_dir=FOLDER_NAME)
 data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
 
 with open(OUTPUT_JSON, 'w') as json_file:
