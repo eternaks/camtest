@@ -49,13 +49,20 @@ def get_calibration_parameters(img_dir):
 
 SENSOR = 'monochrome'
 LENS = 'usbcam'
-FOLDER_NAME = './calibration_images/' + input('Enter calibration image folder name: ')
-OUTPUT_JSON = 'Calibration of' + FOLDER_NAME
+user_input = input('Enter calibration image folder name: ').strip()
+FOLDER_NAME = os.path.join('./calibration_images', user_input)
+
+if not os.path.isdir(FOLDER_NAME):
+    print(f"Error: Folder '{FOLDER_NAME}' does not exist.")
+    exit(1)
 
 mtx, dist = get_calibration_parameters(img_dir=FOLDER_NAME)
 data = {"sensor": SENSOR, "lens": LENS, "mtx": mtx.tolist(), "dist": dist.tolist()}
 
-with open(OUTPUT_JSON, 'w') as json_file:
+filename = f'{user_input}_calibration_constants.json'
+output_path = os.path.join(FOLDER_NAME, filename)
+    
+with open(output_path, 'w') as json_file:
     json.dump(data, json_file, indent=4)
 
-print(f'Data has been saved to {OUTPUT_JSON}')
+print(f'Data has been saved to: {output_path}')

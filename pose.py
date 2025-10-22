@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import constants
 
-json_file_path = './newcalibration.json'
+json_file_path = './calibration_images/2025-10-21_19-28-33/2025-10-21_19-28-33_calibration_constants.json'
 
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
@@ -28,7 +28,9 @@ board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(2)
+cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
+
 
 while True:
     ret, frame = cap.read()
@@ -53,9 +55,30 @@ while True:
 
             # Print pose data
             print(f"Marker ID {ids[i][0]}:")
-            print(f"  Rotation Vector (rvec): {rvecs[i].ravel()}")
+            # print(f"  Rotation Vector (rvec): {rvecs[i].ravel()}")
+
+            # --- Convert rvec to roll, pitch, yaw ---
+            rotation_matrix, _ = cv2.Rodrigues(rvecs[i])
+
+            sy = np.sqrt(rotation_matrix[0, 0] ** 2 + rotation_matrix[1, 0] ** 2)
+            singular = sy < 1e-6
+
+            if not singular:
+                x = np.arctan2(rotation_matrix[2, 1], rotation_matrix[2, 2])  # roll
+                y = np.arctan2(-rotation_matrix[2, 0], sy)                    # pitch
+                z = np.arctan2(rotation_matrix[1, 0], rotation_matrix[0, 0])  # yaw
+            else:
+                x = np.arctan2(-rotation_matrix[1, 2], rotation_matrix[1, 1])
+                y = np.arctan2(-rotation_matrix[2, 0], sy)
+                z = 0
+
+            roll = np.degrees(x)
+            pitch = np.degrees(y)
+            yaw = np.degrees(z)
+
+            print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
             print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
-            print("Top left corner", corners[0])
+            # print("Top left corner", corners[0])
             # print("Bottom right corner", corners[2])
             print("-" * 30)
 

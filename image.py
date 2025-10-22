@@ -19,7 +19,7 @@ def toggleAutoExposure(cap, autoexposure):
     return autoexposure
 
 counter = 0
-image_folder_name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+image_folder_name = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 save_directory = "./calibration_images/" + image_folder_name
 
 try:
@@ -32,7 +32,7 @@ except Exception as e:
 
 # initialize the camera (0 for default webcam)
 # if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(2)
 
 current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
 current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
