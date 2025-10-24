@@ -17,6 +17,7 @@ json_file_path = './calibration_images/2025-10-21_19-28-33/2025-10-21_19-28-33_c
 # SAVE_NAME = 'ChArUco_Marker1.png'
 # ------------------------------
 
+
 with open(json_file_path, 'r') as file: # Read the JSON file
     json_data = json.load(file)
 
@@ -28,9 +29,18 @@ board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(4)
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
+x_vals = []
+y_vals = []
+z_vals = []
+roll_vals = []
+pitch_vals = []
+yaw_vals = []
+
+cntr = 1000
+start_measuring = False
 
 while True:
     ret, frame = cap.read()
@@ -43,6 +53,11 @@ while True:
     # Detect markers
     corners, ids, rejected = detector.detectMarkers(gray)
 
+    k = cv2.waitKey(5)
+    if k == ord('f'):
+        start_measuring = True
+        print("measuring starting")
+
     if ids is not None:
         # Estimate pose of each marker
         rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(
@@ -54,7 +69,7 @@ while True:
             cv2.drawFrameAxes(frame, mtx, dst, rvecs[i], tvecs[i], constants.MARKER_LENGTH * 0.5)
 
             # Print pose data
-            print(f"Marker ID {ids[i][0]}:")
+            # print(f"Marker ID {ids[i][0]}:")
             # print(f"  Rotation Vector (rvec): {rvecs[i].ravel()}")
 
             # --- Convert rvec to roll, pitch, yaw ---
@@ -76,11 +91,24 @@ while True:
             pitch = np.degrees(y)
             yaw = np.degrees(z)
 
-            print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
-            print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
+            # print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
+            # print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
+
+            if start_measuring:
+                roll_vals.append(roll)
+                pitch_vals.append(pitch)
+                yaw_vals.append(yaw)
+                x,y,z = tvecs[i].ravel()
+                x_vals.append(x)
+                y_vals.append(y)
+                z_vals.append(z)
+                cntr-=1
+                print("value captured!", cntr)
+                
+
             # print("Top left corner", corners[0])
             # print("Bottom right corner", corners[2])
-            print("-" * 30)
+            # print("-" * 30)
 
     else:
         cv2.putText(frame, "No markers detected", (20, 40),
@@ -98,34 +126,20 @@ while True:
     cv2.imshow("Pose Estimation", frame)
     if cv2.waitKey(1) & 0xFF == 27:  # ESC to quit
         break
+    if cntr == 0:
+        break
+
+output = {
+    "x": x_vals,
+    "y": y_vals,
+    "z": z_vals,
+    "roll": roll_vals,
+    "pitch": pitch_vals,
+    "yaw": yaw_vals
+}
+
+with open("./plot_data/data.json", "w") as f:
+    json.dump(output, f, indent=4)
 
 cap.release()
 cv2.destroyAllWindows()
-
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # h,  w = image.shape[:2]
-    # newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dst, (w,h), 1, (w,h))
-    # image = cv2.undistort(image, mtx, dst, None, newcameramtx)
-
-    # all_charuco_ids = []
-    # all_charuco_corners = []
-
-
-    # if marker_ids is not None and len(marker_ids) > 0: # If at least one marker is detected
-    #     image = cv2.aruco.drawDetectedMarkers(image, marker_corners, marker_ids)
-    #     ret, charucoCorners, charucoIds = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, image, board)
-    #     if charucoCorners is not None and charucoIds is not None and len(charucoCorners) > 3:
-    #         all_charuco_corners.append(charucoCorners)
-    #         all_charuco_ids.append(charucoIds)
-
-    #     retval, rvec, tvec = cv2.aruco.estimatePoseCharucoBoard(np.array(all_charuco_corners)[0], np.array(all_charuco_ids)[0], board, np.array(mtx), np.array(dst), np.empty(1), np.empty(1))
-
-    #     Zx, Zy, Zz = tvec[0][0], tvec[1][0], tvec[2][0]
-    #     fx, fy = mtx[0][0], mtx[1][1]
-
-    #     print(f'Zz = {Zz}\nfx = {fx}')
-        
-    # cv2.imshow("feed", image)
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
-    #     break
