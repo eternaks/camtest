@@ -48,6 +48,10 @@ while True:
         print("cannot read")
         break
 
+    image = cv2.GaussianBlur(frame, (0,0), 3)
+
+    frame = cv2.addWeighted(frame, 1.5, image, -0.5, 0)
+
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Detect markers
