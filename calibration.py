@@ -12,7 +12,7 @@ import constants
 # LENGTH_PX = 1007   # total length of the page in pixels
 # MARGIN_PX = 30    # size of the margin in pixels
 # ...
-PATH_TO_YOUR_IMAGES = 'calibration_images/2025-10-16 19:42:33'
+PATH_TO_YOUR_IMAGES = 'calibration_images/2025-10-26_13-42-03'
 # ------------------------------
 
 def get_calibration_parameters(img_dir):

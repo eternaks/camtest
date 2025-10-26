@@ -32,7 +32,7 @@ except Exception as e:
 
 # initialize the camera (0 for default webcam)
 # if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(4)
 
 current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
 current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
@@ -51,9 +51,11 @@ if not cap.isOpened():
 while cap.isOpened():
 
     success, img = cap.read()
-    visual_img = img.copy()
 
     gray_frame = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    visual_img = img.copy()
+
     marker_corners, marker_IDs, reject = aruco.detectMarkers(
         gray_frame, marker_dict, parameters=param_markers
     )

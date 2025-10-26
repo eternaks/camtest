@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import constants
 
-json_file_path = './calibration_images/2025-10-21_19-28-33/2025-10-21_19-28-33_calibration_constants.json'
+json_file_path = './calibration_images/2025-10-26_13-42-03/2025-10-26_13-42-03_calibration_constants.json'
 
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
@@ -30,7 +30,7 @@ params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
 cap = cv2.VideoCapture(4)
-cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
+
 
 x_vals = []
 y_vals = []
@@ -47,10 +47,6 @@ while True:
     if not ret:
         print("cannot read")
         break
-
-    image = cv2.GaussianBlur(frame, (0,0), 3)
-
-    frame = cv2.addWeighted(frame, 1.5, image, -0.5, 0)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -95,7 +91,7 @@ while True:
             pitch = np.degrees(y)
             yaw = np.degrees(z)
 
-            # print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
+            print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
             # print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
 
             if start_measuring:
@@ -128,6 +124,7 @@ while True:
     cv2.line(frame, (center_x, center_y - 20), (center_x, center_y + 20), (0, 255, 0), 1)
 
     cv2.imshow("Pose Estimation", frame)
+
     if cv2.waitKey(1) & 0xFF == 27:  # ESC to quit
         break
     if cntr == 0:
@@ -142,7 +139,7 @@ output = {
     "yaw": yaw_vals
 }
 
-with open("./plot_data/data.json", "w") as f:
+with open("./plot_data/data2.json", "w") as f:
     json.dump(output, f, indent=4)
 
 cap.release()
