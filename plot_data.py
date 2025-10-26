@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-with open('./plot_data/data.json', 'r') as f:
+with open('./plot_data/data2.json', 'r') as f:
     data = json.load(f)
 
 x_translation = data['x']
