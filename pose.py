@@ -2,6 +2,7 @@ import json
 import cv2
 import numpy as np
 import constants
+import datetime
 
 json_file_path = './calibration_images/2025-10-26_13-42-03/2025-10-26_13-42-03_calibration_constants.json'
 
@@ -17,6 +18,7 @@ json_file_path = './calibration_images/2025-10-26_13-42-03/2025-10-26_13-42-03_c
 # SAVE_NAME = 'ChArUco_Marker1.png'
 # ------------------------------
 
+measure_distance = input("Z distance from camera (cm): ")
 
 with open(json_file_path, 'r') as file: # Read the JSON file
     json_data = json.load(file)
@@ -139,7 +141,9 @@ output = {
     "yaw": yaw_vals
 }
 
-with open("./plot_data/data2.json", "w") as f:
+time_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+with open("./plot_data/" + time_stamp + "_" + "(" + measure_distance + "cm).json", "w") as f:
     json.dump(output, f, indent=4)
 
 cap.release()

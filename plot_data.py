@@ -2,7 +2,8 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-with open('./plot_data/data2.json', 'r') as f:
+file_name = 'data2.json'
+with open(('./plot_data/' + file_name), 'r') as f:
     data = json.load(f)
 
 x_translation = data['x']
@@ -64,15 +65,17 @@ y_pitch = [0] * len(pitch_rotation)
 y_yaw = [1] * len(yaw_rotation)
 
 
-
-# .plot(kind='scatter', x='x', y=-1, title='T')
 plt.figure(1)
+plt.title(file_name + " translation values")
+plt.xlabel("meters")
 plt.scatter(x_translation,y_x,c='b',marker='x',label='x translation')
 plt.scatter(y_translation,y_y,c='g',marker='x',label='y translation')
 plt.scatter(z_translation,y_z,c='r',marker='x',label='z translation')
 plt.legend(loc='upper left')
 
 plt.figure(2)
+plt.title(file_name + " rotation values")
+plt.xlabel("degrees")
 plt.scatter(roll_rotation,y_roll,c='b',marker='x',label='roll rotation')
 plt.scatter(pitch_rotation,y_pitch,c='g',marker='x',label='pitch rotation')
 plt.scatter(yaw_rotation,y_yaw,c='r',marker='x',label='yaw rotation')
