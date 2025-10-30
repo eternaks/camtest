@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 import constants
 from collections import deque
+import datetime
 
+measure_distance = input("Z distance from camera (cm): ")
 json_file_path = './calibration_images/2025-10-21_19-28-33/2025-10-21_19-28-33_calibration_constants.json'
 
 with open(json_file_path, 'r') as file:
@@ -22,7 +24,7 @@ board = cv2.aruco.CharucoBoard(
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
 x_vals, y_vals, z_vals = [], [], []
@@ -99,9 +101,32 @@ while True:
                 y_angle = np.arctan2(-rotation_matrix[2, 0], sy)
                 z_angle = 0
 
+            # --- Convert to degrees ---
             roll = np.degrees(x_angle)
             pitch = np.degrees(y_angle)
             yaw = np.degrees(z_angle)
+
+            # --- Convert to 0–360° for roll/yaw to avoid wraparound ---
+            roll = (roll + 360) % 360
+            yaw = (yaw + 360) % 360
+            # Keep pitch as -90 to +90 for clarity
+
+            # --- Smooth unwrapping (frame-to-frame continuity) ---
+            if roll_vals:
+                prev_roll = roll_vals[-1]
+                prev_yaw = yaw_vals[-1]
+
+                # Handle roll wraparound
+                if roll - prev_roll > 180:
+                    roll -= 360
+                elif roll - prev_roll < -180:
+                    roll += 360
+
+                # Handle yaw wraparound
+                if yaw - prev_yaw > 180:
+                    yaw -= 360
+                elif yaw - prev_yaw < -180:
+                    yaw += 360
 
             # --- Get raw translation ---
             x, y, z = tvecs[i].ravel()
@@ -122,6 +147,7 @@ while True:
                 yaw_vals.append(yaw)
                 cntr -= 1
                 print(f"value captured! Remaining: {cntr}")
+
 
             ### --- VISUALIZATION UPDATE --- ###
             # Map 3D coordinates to 2D visualization (x, y)
@@ -186,8 +212,10 @@ output = {
     "yaw": yaw_vals
 }
 
-# with open("./plot_data/data.json", "w") as f:
-#     json.dump(output, f, indent=4)
+time_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+with open("./plot_data/" + time_stamp + "_kalman_" + "(" + measure_distance + "cm).json", "w") as f:
+    json.dump(output, f, indent=4)
 
 cap.release()
 cv2.destroyAllWindows()

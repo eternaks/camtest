@@ -31,7 +31,7 @@ board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(2)
 
 
 x_vals = []
@@ -93,19 +93,41 @@ while True:
             pitch = np.degrees(y)
             yaw = np.degrees(z)
 
+            # --- Convert to 0–360° to avoid wraparound jumps ---
+            roll = (roll + 360) % 360
+            yaw = (yaw + 360) % 360
+            # Keep pitch as -90° to +90° (this is natural and avoids weird flips)
+
+            # --- Optional: smooth unwrapping over time ---
+            if roll_vals:
+                # unwrap based on previous value to avoid jumps near 0/360
+                prev_roll = roll_vals[-1]
+                prev_yaw = yaw_vals[-1]
+
+                # If big jump detected (>180°), correct it
+                if roll - prev_roll > 180:
+                    roll -= 360
+                elif roll - prev_roll < -180:
+                    roll += 360
+
+                if yaw - prev_yaw > 180:
+                    yaw -= 360
+                elif yaw - prev_yaw < -180:
+                    yaw += 360
+
             print(f"  Roll: {roll:.2f}°, Pitch: {pitch:.2f}°, Yaw: {yaw:.2f}°")
-            # print(f"  Translation Vector (tvec): {tvecs[i].ravel()}")
 
             if start_measuring:
                 roll_vals.append(roll)
                 pitch_vals.append(pitch)
                 yaw_vals.append(yaw)
-                x,y,z = tvecs[i].ravel()
+                x, y, z = tvecs[i].ravel()
                 x_vals.append(x)
                 y_vals.append(y)
                 z_vals.append(z)
-                cntr-=1
+                cntr -= 1
                 print("value captured!", cntr)
+
                 
 
             # print("Top left corner", corners[0])
@@ -143,7 +165,7 @@ output = {
 
 time_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-with open("./plot_data/" + time_stamp + "_" + "(" + measure_distance + "cm).json", "w") as f:
+with open("./plot_data/" + time_stamp + "_raw_" + "(" + measure_distance + "cm).json", "w") as f:
     json.dump(output, f, indent=4)
 
 cap.release()
