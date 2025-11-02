@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-file_name = '2025-10-30_19-26-51_raw_(50cm).json'
+file_name = '60cm_rotated.json'
 with open(('./plot_data/' + file_name), 'r') as f:
     data = json.load(f)
 

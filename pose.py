@@ -4,7 +4,7 @@ import numpy as np
 import constants
 import datetime
 
-json_file_path = './calibration_images/2025-10-26_13-42-03/2025-10-26_13-42-03_calibration_constants.json'
+json_file_path = 'calibration_images/380_images/no_refinement.json'
 
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
@@ -31,8 +31,10 @@ board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(4)
 
+# NOTE
+# probably want to check out interpolatecornerscharuco for calibration too
 
 x_vals = []
 y_vals = []
@@ -55,7 +57,21 @@ while True:
     # Detect markers
     corners, ids, rejected = detector.detectMarkers(gray)
 
-    k = cv2.waitKey(5)
+    # sub corner refining
+    if ids is not None and len(ids) > 0:
+         # Define termination criteria: (type, max_iter, epsilon)
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+        for i in range(len(corners)):
+            cv2.cornerSubPix(
+                gray,
+                corners[i],
+                winSize=(5, 5),      # search window radius
+                zeroZone=(-1, -1),   # use full window
+                criteria=criteria
+            )
+
+    k = cv2.waitKey(4)
     if k == ord('f'):
         start_measuring = True
         print("measuring starting")

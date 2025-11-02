@@ -12,7 +12,8 @@ import constants
 # LENGTH_PX = 1007   # total length of the page in pixels
 # MARGIN_PX = 30    # size of the margin in pixels
 # ...
-PATH_TO_YOUR_IMAGES = 'calibration_images/2025-10-26_13-42-03'
+PATH_TO_YOUR_IMAGES = 'calibration_images/380_images'
+subpix_criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # ------------------------------
 
 def get_calibration_parameters(img_dir):
@@ -32,14 +33,22 @@ def get_calibration_parameters(img_dir):
         image = cv2.imread(image_file)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         imgSize = image.shape
-        image_copy = image.copy()
+
         marker_corners, marker_ids, rejectedCandidates = detector.detectMarkers(image)
         
         if len(marker_ids) > 0: # If at least one marker is detected
+            # subpixel refinement for corners
+            # for corner in marker_corners:
+            #     cv2.cornerSubPix(image, corner, winSize=(5, 5), zeroZone=(-1, -1), criteria=subpix_criteria)
+
+
             # cv2.aruco.drawDetectedMarkers(image_copy, marker_corners, marker_ids)
             ret, charucoCorners, charucoIds = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, image, board)
 
             if charucoIds is not None and len(charucoCorners) > 3:
+                # subpixel refinement again on charuco corners
+                cv2.cornerSubPix(image, charucoCorners, winSize=(5,5), zeroZone=(-1, -1), criteria=subpix_criteria)
+
                 all_charuco_corners.append(charucoCorners)
                 all_charuco_ids.append(charucoIds)
 
