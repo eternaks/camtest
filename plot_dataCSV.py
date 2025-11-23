@@ -75,22 +75,40 @@ y_roll = [-1] * len(roll_rotation)
 y_pitch = [0] * len(pitch_rotation)
 y_yaw = [1] * len(yaw_rotation)
 
-plt.figure(1)
-plt.title(file_name + " translation values")
-plt.xlabel("meters")
-plt.scatter(x_translation, y_x, c='b', marker='x', label='x translation', alpha=0.5)
-plt.scatter(y_translation, y_y, c='g', marker='x', label='y translation', alpha=0.5)
-plt.scatter(z_translation, y_z, c='r', marker='x', label='z translation', alpha=0.5)
-plt.legend(loc='upper left')
-plt.yticks([-1, 0, 1], ['X', 'Y', 'Z']) # Optional: label the Y axis for clarity
 
-plt.figure(2)
-plt.title(file_name + " rotation values")
-plt.xlabel("degrees")
-plt.scatter(roll_rotation, y_roll, c='b', marker='x', label='roll rotation', alpha=0.5)
-plt.scatter(pitch_rotation, y_pitch, c='g', marker='x', label='pitch rotation', alpha=0.5)
-plt.scatter(yaw_rotation, y_yaw, c='r', marker='x', label='yaw rotation', alpha=0.5)
-plt.legend(loc='upper left')
-plt.yticks([-1, 0, 1], ['Roll', 'Pitch', 'Yaw']) # Optional: label the Y axis for clarity
+fig, axs = plt.subplots(6, 1, figsize=(10, 10), constrained_layout=True)
+fig.suptitle(file_name)
+
+y_zeros = [0] * len(x_translation)
+
+axs[0].scatter(x_translation, y_zeros, c='b', marker='x', alpha=0.5)
+axs[0].set_title("X Translation")
+axs[0].set_xlabel("meters")
+axs[0].set_yticks([]) # Hide Y-axis ticks since they are just 0
+
+axs[1].scatter(y_translation, y_zeros, c='g', marker='x', alpha=0.5)
+axs[1].set_title("Y Translation")
+axs[1].set_xlabel("meters")
+axs[1].set_yticks([])
+
+axs[2].scatter(z_translation, y_zeros, c='r', marker='x', alpha=0.5)
+axs[2].set_title("Z Translation")
+axs[2].set_xlabel("meters")
+axs[2].set_yticks([])
+
+axs[3].scatter(roll_rotation, y_zeros, c='b', marker='x', alpha=0.5)
+axs[3].set_title("Roll Rotation")
+axs[3].set_xlabel("degrees")
+axs[3].set_yticks([]) # Hide Y-axis ticks since they are just 0
+
+axs[4].scatter(pitch_rotation, y_zeros, c='g', marker='x', alpha=0.5)
+axs[4].set_title("Pitch Rotation")
+axs[4].set_xlabel("degrees")
+axs[4].set_yticks([])
+
+axs[5].scatter(yaw_rotation, y_zeros, c='r', marker='x', alpha=0.5)
+axs[5].set_title("Yaw Rotation")
+axs[5].set_xlabel("degrees")
+axs[5].set_yticks([])
 
 plt.show()
