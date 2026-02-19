@@ -32,13 +32,19 @@ except Exception as e:
 
 # initialize the camera (0 for default webcam)
 # if you have multiple cameras, you might need to try other indices (e.g., 1, 2)
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(0)
 
 current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
 current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
 current_gain = int(cap.get(cv2.CAP_PROP_GAIN))
 autoexposure = cap.get(cv2.CAP_PROP_AUTO_EXPOSURE)
 cap.set(cv2.CAP_PROP_EXPOSURE, constants.DEFAULT_CAM_EXPOSURE)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+print(f"Current resolution: {width} x {height}")
 
 marker_dict = aruco.getPredefinedDictionary(constants.ARUCO_DICT)
 param_markers = aruco.DetectorParameters()

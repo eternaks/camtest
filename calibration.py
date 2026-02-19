@@ -12,7 +12,7 @@ import constants
 # LENGTH_PX = 1007   # total length of the page in pixels
 # MARGIN_PX = 30    # size of the margin in pixels
 # ...
-PATH_TO_YOUR_IMAGES = 'calibration_images/380_images'
+PATH_TO_YOUR_IMAGES = 'calibration_images/100_images'
 subpix_criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # ------------------------------
 

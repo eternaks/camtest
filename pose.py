@@ -4,8 +4,8 @@ import numpy as np
 import constants
 import datetime
 
-json_file_path = 'calibration_images/380_images/no_refinement.json'
-
+# json_file_path = 'calibration_images/380_images/no_refinement.json'
+json_file_path = 'calibration_images/2026-02-12_19-17-49/2026-02-12_19-17-49_calibration_constants.json'
 # ------------------------------
 # ENTER YOUR PARAMETERS HERE:
 # ARUCO_DICT = cv2.aruco.DICT_4X4_50
@@ -31,7 +31,7 @@ board = cv2.aruco.CharucoBoard((constants.SQUARES_VERTICALLY, constants.SQUARES_
 params = cv2.aruco.DetectorParameters()
 detector = cv2.aruco.ArucoDetector(dictionary, params)
 
-cap = cv2.VideoCapture(4)
+cap = cv2.VideoCapture(0)
 
 # NOTE
 # probably want to check out interpolatecornerscharuco for calibration too

@@ -5,7 +5,7 @@ import constants
 
 def main():
     # 4 is usb camera
-    cap = cv2.VideoCapture(4)
+    cap = cv2.VideoCapture(0)
 
     current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
     current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
