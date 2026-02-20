@@ -7,16 +7,20 @@ def main():
     # 4 is usb camera
     cap = cv2.VideoCapture(0)
 
-    current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
-    current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
-    current_gain = int(cap.get(cv2.CAP_PROP_GAIN))
+    # current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
+    current_exposure = int(cap.set(cv2.CAP_PROP_EXPOSURE, 125))
+    # current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
+    current_brightness = int(cap.set(cv2.CAP_PROP_BRIGHTNESS, 100))
+
+    # current_gain = int(cap.get(cv2.CAP_PROP_GAIN))
+    current_gain = int(cap.set(cv2.CAP_PROP_GAIN, 40))
+
     autoexposure = cap.get(cv2.CAP_PROP_AUTO_EXPOSURE)
 
-    cap.set(cv2.CAP_PROP_EXPOSURE, constants.DEFAULT_CAM_EXPOSURE)
-    print("autoexposure", autoexposure)
-
-    print("brightness", current_brightness)
-    print("exposure", current_exposure)
+    # cap.set(cv2.CAP_PROP_EXPOSURE, constants.DEFAULT_CAM_EXPOSURE)
+    print("autoexposure", cap.get(cv2.CAP_PROP_AUTO_EXPOSURE))
+    print("brightness", cap.get(cv2.CAP_PROP_BRIGHTNESS))
+    print("exposure", cap.get(cv2.CAP_PROP_EXPOSURE))
     print("gain", current_gain)
 
     save_directory = "/home/calvin/projects/camtest/calibration_images"
