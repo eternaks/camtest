@@ -5,15 +5,15 @@ import constants
 
 def main():
     # 4 is usb camera
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(4)
 
     # current_exposure = int(cap.get(cv2.CAP_PROP_EXPOSURE))
-    current_exposure = int(cap.set(cv2.CAP_PROP_EXPOSURE, 125))
+    # current_exposure = int(cap.set(cv2.CAP_PROP_EXPOSURE, 125))
     # current_brightness = int(cap.get(cv2.CAP_PROP_BRIGHTNESS))
-    current_brightness = int(cap.set(cv2.CAP_PROP_BRIGHTNESS, 100))
+    # current_brightness = int(cap.set(cv2.CAP_PROP_BRIGHTNESS, 100))
 
     # current_gain = int(cap.get(cv2.CAP_PROP_GAIN))
-    current_gain = int(cap.set(cv2.CAP_PROP_GAIN, 40))
+    # current_gain = int(cap.set(cv2.CAP_PROP_GAIN, 40))
 
     autoexposure = cap.get(cv2.CAP_PROP_AUTO_EXPOSURE)
 
@@ -21,7 +21,8 @@ def main():
     print("autoexposure", cap.get(cv2.CAP_PROP_AUTO_EXPOSURE))
     print("brightness", cap.get(cv2.CAP_PROP_BRIGHTNESS))
     print("exposure", cap.get(cv2.CAP_PROP_EXPOSURE))
-    print("gain", current_gain)
+    print("gain", cap.get(cv2.CAP_PROP_GAIN))
+    print("white balance", cap.get(cv2.CAP_PROP_AUTO_WB))
 
     save_directory = "/home/calvin/projects/camtest/calibration_images"
 
@@ -45,8 +46,8 @@ def main():
 
         cv2.imshow('Cam feed', frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
         
         # toggle auto exposure
         if cv2.waitKey(1) & 0xFF == ord('m'):
@@ -54,27 +55,28 @@ def main():
                 autoexposure = 3
             else:
                 autoexposure = 1
+            print("setting autoexposure")
             toggleAutoExposure(cap, autoexposure)
     
-        # increase exposure
-        if cv2.waitKey(1) & 0xFF == ord('z'):
-            current_exposure += 10
-            setExposure(cap, current_exposure)
+        # # increase exposure
+        # if cv2.waitKey(1) & 0xFF == ord('z'):
+        #     current_exposure += 10
+        #     setExposure(cap, current_exposure)
         
-        # decrease exposure
-        if cv2.waitKey(1) & 0xFF == ord('x'):
-            current_exposure -= 10
-            setExposure(cap, current_exposure)
+        # # decrease exposure
+        # if cv2.waitKey(1) & 0xFF == ord('x'):
+        #     current_exposure -= 10
+        #     setExposure(cap, current_exposure)
             
-        # increase brightness
-        if cv2.waitKey(1) & 0xFF == ord('v'):
-            current_brightness += 10
-            setBrightness(cap, current_brightness)
+        # # increase brightness
+        # if cv2.waitKey(1) & 0xFF == ord('v'):
+        #     current_brightness += 10
+        #     setBrightness(cap, current_brightness)
         
-        # decrease brightness
-        if cv2.waitKey(1) & 0xFF == ord('b'):
-            current_brightness -= 10
-            setBrightness(cap, current_brightness)
+        # # decrease brightness
+        # if cv2.waitKey(1) & 0xFF == ord('b'):
+        #     current_brightness -= 10
+        #     setBrightness(cap, current_brightness)
 
         if cv2.waitKey(1) & 0xFF == ord('c'):
             filename = os.path.join(save_directory, f"picture_{i+1}.jpg")
